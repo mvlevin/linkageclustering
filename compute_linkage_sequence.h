@@ -37,6 +37,16 @@ using std::pair;
 using std::set;
 using std::vector;
 
+template<class IndexType, class DissimilarityValueType>
+class SymmetricDissimilarityMatrix;
+
+template<class IndexType, class DissimilarityValueType>
+class FileSetDissimilarityMatrix;
+
+template<class IndexType, class LinkageValueType>
+class LinkageContainer;
+
+
 // Takes in the dissimilarity matrix represented as a vector of rows
 // of the matrix, each row r is represented by vector of pairs 
 // (index, dissimilarity_{r, index}) sorted by increasing index
@@ -53,9 +63,33 @@ using std::vector;
 // Use long long or double. Don't use int32
 // with big data sets, as, even if the dissimilarities fit
 // in int32, the linkage values L(i, X) may not fit in int32.
-template<class LinkageValueType>
-vector< pair<size_t, LinkageValueType> > GetLinkageSequence(
-    const vector< vector< pair<size_t, LinkageValueType> > >& dissimilarities);
+template<class DissimilarityMatrix, class LinkageValueType>
+class LinkageSequenceComputer {
+ public:
+  typedef typename DissimilarityMatrix::IndexType IndexType;
+  typedef typename DissimilarityMatrix::DissimilarityValueType DissimilarityValueType;
+  typedef typename DissimilarityMatrix::RowIterator RowIterator;
+
+  static vector< pair<IndexType, LinkageValueType> > GetLinkageSequence(
+      const DissimilarityMatrix& dissimilarity_matrix);
+ private:
+  // Initializes linkage_container by adding all elements of V,
+  // along with their linkages L(i, V) to the whole set.
+  static void InitializeLinkageContainerWithWholeSet(
+      const DissimilarityMatrix& dissimilarity_matrix,
+      LinkageContainer<IndexType, LinkageValueType>* linkage_container) {
+    for (size_t index = 0; index < dissimilarity_matrix.GetRowCount(); ++index) {
+      LinkageValueType linkage = 0;
+      for (RowIterator dissimilarity_iterator = 
+               dissimilarity_matrix.GetRowIterator(index);
+           !dissimilarity_iterator.Done();
+           dissimilarity_iterator.Next()) {
+        linkage += dissimilarity_iterator.GetDissimilarity();
+      }
+      linkage_container->AddElement(index, linkage);
+    }
+  }
+};
 
 // Contains subset X of the initial set V of elements, along
 // with linkage L(i, X) of each element i of the current
@@ -79,7 +113,7 @@ vector< pair<size_t, LinkageValueType> > GetLinkageSequence(
 // Use either long long or double. Don't use int (int32), as if there are
 // a lot of elements, even if each a_ij fits in int32, L(i, X) can
 // be out of the int32 range.
-template<class LinkageValueType>
+template<class IndexType, class LinkageValueType>
 class LinkageContainer {
 public:
   LinkageContainer() {}
@@ -87,7 +121,7 @@ public:
   // Adds element index with L(index, V) = linkage to the current subset X.
   //
   // Aborts on trying to add the same element twice.
-  void AddElement(size_t index, LinkageValueType linkage);
+  void AddElement(IndexType index, LinkageValueType linkage);
 
   // Returns true if the current subset X is empty.
   bool Empty() const;
@@ -103,25 +137,27 @@ public:
   // Returns the index of i (from 0 to n - 1).
   //
   // Aborts if called when X is empty.
-  size_t RemoveMinLinkageElement();
+  IndexType RemoveMinLinkageElement();
 
   // Returns true if the current subset X contains element index.
-  bool Contains(size_t index) const;
+  bool Contains(IndexType index) const;
 
   // Decreases the linkage value of element index.
   //
   // Aborts if element index is not in the current subset X.
-  void DecreaseLinkage(size_t index, LinkageValueType decrease);
+  void DecreaseLinkage(IndexType index, LinkageValueType decrease);
 private:
   // Contains pairs (L(i, X), i) for each element i in the current subset X.
-  set< pair<LinkageValueType, size_t> > elements_;
+  set< pair<LinkageValueType, IndexType> > elements_;
 
   // Contains map from i to L(i, X) for each element i in the current subset X.
-  map<size_t, LinkageValueType> linkage_;
+  map<IndexType, LinkageValueType> linkage_;
 };
 
-template<class LinkageValueType>
-void LinkageContainer<LinkageValueType>::AddElement(size_t index, LinkageValueType linkage) {
+template<class IndexType, class LinkageValueType>
+void LinkageContainer<IndexType, LinkageValueType>::AddElement(
+    IndexType index, 
+    LinkageValueType linkage) {
   if (linkage_.find(index) != linkage_.end()) {
     cerr << "Trying to add an existing element to the current subset" << endl;
     abort();
@@ -131,13 +167,13 @@ void LinkageContainer<LinkageValueType>::AddElement(size_t index, LinkageValueTy
   assert(elements_.size() == linkage_.size());
 }
 
-template<class LinkageValueType>
-bool LinkageContainer<LinkageValueType>::Empty() const {
+template<class IndexType, class LinkageValueType>
+bool LinkageContainer<IndexType, LinkageValueType>::Empty() const {
   return elements_.empty();
 }
 
-template<class LinkageValueType>
-LinkageValueType LinkageContainer<LinkageValueType>::GetMinLinkage() const {
+template<class IndexType, class LinkageValueType>
+LinkageValueType LinkageContainer<IndexType, LinkageValueType>::GetMinLinkage() const {
   if (elements_.empty()) {
     cerr << "Can't get min linkage of an empty set" << endl;
     abort();
@@ -145,21 +181,21 @@ LinkageValueType LinkageContainer<LinkageValueType>::GetMinLinkage() const {
   return elements_.begin()->first;
 }
 
-template<class LinkageValueType>
-size_t LinkageContainer<LinkageValueType>::RemoveMinLinkageElement() {
+template<class IndexType, class LinkageValueType>
+IndexType LinkageContainer<IndexType, LinkageValueType>::RemoveMinLinkageElement() {
   if (elements_.empty()) {
     cerr << "Can't remove min linkage element from an empty set" << endl;
     abort();
   }
-  size_t index = elements_.begin()->second;
+  IndexType index = elements_.begin()->second;
   linkage_.erase(index);
   elements_.erase(elements_.begin());
   assert(linkage_.size() == elements_.size());
   return index;
 }
 
-template<class LinkageValueType>
-bool LinkageContainer<LinkageValueType>::Contains(size_t index) const {
+template<class IndexType, class LinkageValueType>
+bool LinkageContainer<IndexType, LinkageValueType>::Contains(IndexType index) const {
   if (linkage_.find(index) == linkage_.end()) {
     return false;
   } else {
@@ -167,8 +203,8 @@ bool LinkageContainer<LinkageValueType>::Contains(size_t index) const {
   }
 }
 
-template<class LinkageValueType>
-void LinkageContainer<LinkageValueType>::DecreaseLinkage(size_t index, LinkageValueType decrease) {
+template<class IndexType, class LinkageValueType>
+void LinkageContainer<IndexType, LinkageValueType>::DecreaseLinkage(IndexType index, LinkageValueType decrease) {
   if (linkage_.find(index) == linkage_.end()) {
     cerr << "There is no element " 
          << index 
@@ -180,7 +216,7 @@ void LinkageContainer<LinkageValueType>::DecreaseLinkage(size_t index, LinkageVa
     cerr << "Trying to make linkage negative" << endl;
     abort();
   }
-  pair<LinkageValueType, size_t> element = make_pair(linkage_[index], index);
+  pair<LinkageValueType, IndexType> element = make_pair(linkage_[index], index);
   if (elements_.find(element) == elements_.end()) {
     cerr << "There is no element with index = " 
          << index 
@@ -194,41 +230,25 @@ void LinkageContainer<LinkageValueType>::DecreaseLinkage(size_t index, LinkageVa
   assert(linkage_.size() == elements_.size());
 }
 
-// Initializes linkage_container by adding all elements of V,
-// along with their linkages L(i, V) to the whole set.
-template<class LinkageValueType>
-void InitializeLinkageContainerWithWholeSet(
-    const vector< vector< pair<size_t, LinkageValueType> > >& dissimilarities,
-    LinkageContainer<LinkageValueType>* linkage_container) {
-  for (size_t index = 0; index < dissimilarities.size(); ++index) {
-    const vector< pair<size_t, LinkageValueType> >& dissimilarities_list = dissimilarities[index];
-    LinkageValueType linkage = 0;
-    for (size_t neighbor_index = 0; neighbor_index < dissimilarities_list.size(); ++neighbor_index) {
-      linkage += dissimilarities_list[neighbor_index].second;
-    }
-    linkage_container->AddElement(index, linkage);
-  }
-}
-
-template<class LinkageValueType>
-vector< pair<size_t, LinkageValueType> > GetLinkageSequence(
-    const vector< vector< pair<size_t, LinkageValueType> > >& dissimilarities) {
-  LinkageContainer<LinkageValueType> linkage_container;
+template<class DissimilarityMatrix, class LinkageValueType>
+vector< pair<typename DissimilarityMatrix::IndexType, LinkageValueType> > 
+LinkageSequenceComputer<DissimilarityMatrix, LinkageValueType>::GetLinkageSequence(
+    const DissimilarityMatrix& dissimilarities) {
+  LinkageContainer<IndexType, LinkageValueType> linkage_container;
   InitializeLinkageContainerWithWholeSet(dissimilarities, &linkage_container);
   vector< pair<size_t, LinkageValueType> > linkage_sequence;
-  for (size_t step = 0; step < dissimilarities.size(); ++step) {
+  for (size_t step = 0; step < dissimilarities.GetRowCount(); ++step) {
     LinkageValueType min_linkage = linkage_container.GetMinLinkage();
     size_t removed_element_index = linkage_container.RemoveMinLinkageElement();
     linkage_sequence.push_back(make_pair(removed_element_index, min_linkage));
-    const vector< pair<size_t, LinkageValueType> >& element_dissimilarities = 
-        dissimilarities[removed_element_index];
-    for (size_t dissimilarity_index = 0;
-         dissimilarity_index < element_dissimilarities.size();
-         ++dissimilarity_index) {
-      size_t neighbor_index = element_dissimilarities[dissimilarity_index].first;
-      LinkageValueType dissimilarity = element_dissimilarities[dissimilarity_index].second;
-      if (linkage_container.Contains(neighbor_index)) {
-        linkage_container.DecreaseLinkage(neighbor_index, dissimilarity);
+    for (RowIterator dissimilarity_iterator = 
+             dissimilarities.GetRowIterator(removed_element_index);
+         !dissimilarity_iterator.Done();
+         dissimilarity_iterator.Next()) {
+      IndexType to_index = dissimilarity_iterator.GetToIndex();
+      LinkageValueType dissimilarity = dissimilarity_iterator.GetDissimilarity();
+      if (linkage_container.Contains(to_index)) {
+        linkage_container.DecreaseLinkage(to_index, dissimilarity);
       }
     }    
   }
