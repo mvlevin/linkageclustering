@@ -23,6 +23,7 @@
 
 #include "compute_linkage_sequence.h"
 #include "memory_based_dissimilarity_matrix.h"
+#include "file_set_dissimilarity_matrix.h"
 
 #include <cassert>
 #include <cstdio>

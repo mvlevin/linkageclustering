@@ -37,32 +37,42 @@ using std::pair;
 using std::set;
 using std::vector;
 
-template<class IndexType, class DissimilarityValueType>
-class SymmetricDissimilarityMatrix;
-
-template<class IndexType, class DissimilarityValueType>
-class FileSetDissimilarityMatrix;
-
+// An auxilliary data structure to store elements
+// of the current set along with their linkages
+// to the current set, and retrieve and delete
+// the element with the lowest linkage value fast.
 template<class IndexType, class LinkageValueType>
 class LinkageContainer;
 
-
-// Takes in the dissimilarity matrix represented as a vector of rows
-// of the matrix, each row r is represented by vector of pairs 
-// (index, dissimilarity_{r, index}) sorted by increasing index
-// for all non-zero dissimilarities in the row r.
+// Computes the linkage sequence for a set provided a dissimilarity
+// matrix.
 //
-// Returns sequence { (i_1, F_{i_1}), (i_2, F_{i_2}), \dots,
-// (i_n, F_{i_n}) }, where i_1 is the element with the least
-// linkage L(i_1, V), F_{i_1} is the linkage of V \ {i_1},
-// i_2 is the element with the least linkage L(i_2, V \ {i_1}),
-// F_{i_2} is the linkage of V \ {i_1} \ {i_2}, and so on.
+// The DissimilarityMatrix class must define:
+//   The following types:
 //
-// !!!IMPORTANT!!! 
-// LinkageValueType is the type to represent linkage values.
-// Use long long or double. Don't use int32
-// with big data sets, as, even if the dissimilarities fit
-// in int32, the linkage values L(i, X) may not fit in int32.
+//     IndexType - The type to represent an index of an element in the set.
+//                 Can be size_t, long long, double, etc.
+//     DissimilarityValueType - The type to represent an element of the matrix.
+//                              Can be size_t, long long, double, etc.
+//     RowIterator - The type to pass one-way through a row of the matrix, with
+//                   the following interface:
+//         IndexType GetToIndex() - returns the index of the current column.
+//         DissimilarityValueType GetDissimilarity() - returns the value of the current matrix cell.
+//         bool Done() - returns true if we passed through the whole row.
+//         void Next() - moves iterator to the next column.
+//
+//   And the following interface:
+//
+//     IndexType GetRowsCount() - returns the number of rows in the matrix
+//     RowIterator GetRowIterator(IndexType index) - returns the RowIterator for index-th row
+//
+// The LinkageValueType is the type to store the values of linkages L(i, X) of an
+// element to a set. It can be a different type from the type for matrix elements
+// because the linkage values may be significantly bigger than dissimilarity values.
+// For example, if DissimilarityValueType is unsigned int32, then LinkageValueType may be
+// unsigned int64 to fit the maximum possible value of the linkage function.
+// It is required that DissimilarityValueType can be converted to LinkageValueType automatically
+// and without loss of precision.
 template<class DissimilarityMatrix, class LinkageValueType>
 class LinkageSequenceComputer {
  public:
@@ -70,6 +80,11 @@ class LinkageSequenceComputer {
   typedef typename DissimilarityMatrix::DissimilarityValueType DissimilarityValueType;
   typedef typename DissimilarityMatrix::RowIterator RowIterator;
 
+  // Returns sequence { (i_1, F_{i_1}), (i_2, F_{i_2}), \dots,
+  // (i_n, F_{i_n}) }, where i_1 is the element with the least
+  // linkage L(i_1, V), F_{i_1} is the linkage of V \ {i_1},
+  // i_2 is the element with the least linkage L(i_2, V \ {i_1}),
+  // F_{i_2} is the linkage of V \ {i_1} \ {i_2}, and so on.
   static vector< pair<IndexType, LinkageValueType> > GetLinkageSequence(
       const DissimilarityMatrix& dissimilarity_matrix);
  private:
@@ -110,7 +125,8 @@ class LinkageSequenceComputer {
 // LinkageValueType is the type in which to accumulate linkages.
 //
 // !!!IMPORTANT!!!
-// Use either long long or double. Don't use int (int32), as if there are
+// Use either long long or double for the LinkageValueType if you have a big
+// matrix. Don't use int (int32), as if there are
 // a lot of elements, even if each a_ij fits in int32, L(i, X) can
 // be out of the int32 range.
 template<class IndexType, class LinkageValueType>

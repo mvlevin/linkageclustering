@@ -1,13 +1,13 @@
 // Copyright 2010 Michael Levin
 //
 // Example class representing a sparse
-// square dissimilarity matrix.
+// square dissimilarity matrix in memory.
 
 #include <vector>
 
 using std::vector;
 
-// Represents a sparse square dissimilarity matrix.
+// Represents a sparse square dissimilarity matrix in memory.
 //
 // Stored as a vector of rows.
 // Each row is stored as a vector of pairs (index, dissimilarity)
