@@ -17,7 +17,7 @@ using std::vector;
 //       cells value. Can be, for example, size_t, unsigned long long
 //       or double.
 template<class DissimilarityValueType_>
-class MemoryBasedDissimilarityMatrix {
+class NonSymmetricDissimilarityMatrix {
  public:
   // The following typedefs, iterator class and methods are required to use the GetLinkageSequence
   // algorithm with a dissimilarity matrix.
@@ -53,7 +53,7 @@ class MemoryBasedDissimilarityMatrix {
     Iterator end_;
   };
 
-  MemoryBasedDissimilarityMatrix(
+  NonSymmetricDissimilarityMatrix(
     const vector< vector<pair<IndexType, DissimilarityValueType> > >& sparse_matrix)
   : sparse_matrix_(sparse_matrix) {}
 
