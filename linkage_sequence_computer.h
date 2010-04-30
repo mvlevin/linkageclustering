@@ -19,8 +19,8 @@
 // where M is the number of non-zero elements in a_ij,
 // and n is the the number of elements in the whole set
 // V.
-#ifndef COMPUTE_LINKAGE_SEQUENCE_H_
-#define COMPUTE_LINKAGE_SEQUENCE_H_
+#ifndef LINKAGE_SEQUENCE_COMPUTER_H_
+#define LINKAGE_SEQUENCE_COMPUTER_H_
 
 #include <cassert>
 #include <iostream>
@@ -271,4 +271,4 @@ LinkageSequenceComputer<DissimilarityMatrix, LinkageValueType>::GetLinkageSequen
   return linkage_sequence;
 }
 
-#endif  // COMPUTE_LINKAGE_SEQUENCE_H_
+#endif  // LINKAGE_SEQUENCE_COMPUTER_H_

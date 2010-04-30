@@ -21,9 +21,8 @@
 //    i = 4 F_i = 1
 //    i = 7 F_i = 0
 
-#include "compute_linkage_sequence.h"
+#include "linkage_sequence_computer.h"
 #include "memory_based_dissimilarity_matrix.h"
-#include "file_set_dissimilarity_matrix.h"
 
 #include <cassert>
 #include <cstdio>

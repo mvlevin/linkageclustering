@@ -3,6 +3,9 @@
 // Example class representing a sparse
 // square dissimilarity matrix in memory.
 
+#ifndef MEMORY_BASED_SIMILARITY_MATRIX_H_
+#define MEMORY_BASED_SIMILARITY_MATRIX_H_
+
 #include <vector>
 
 using std::vector;
@@ -73,3 +76,5 @@ class MemoryBasedDissimilarityMatrix {
   // for each such index that dissimilarity is non-zero.
   vector< vector<pair<IndexType, DissimilarityValueType> > > sparse_matrix_;
 };
+
+#endif  // MEMORY_BASED_SIMILARITY_MATRIX_H_
