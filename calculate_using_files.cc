@@ -64,6 +64,7 @@ int main(int argc, char** argv) {
     cerr << "rowcount must be unsigned int" << endl;
     return -2;
   }
+  freopen("output.txt", "w", stdout);
   vector< pair<size_t, long long> > linkage_sequence = 
     LinkageSequenceComputer<FileSetDissimilarityMatrix<size_t, TextFileReader>, long long>::GetLinkageSequence(InitializeMatrix(basename, rowcount));
   for (size_t index = 0; index < linkage_sequence.size(); ++index) {
