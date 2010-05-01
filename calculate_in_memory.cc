@@ -81,7 +81,6 @@ int main() {
   freopen("output.txt", "w", stdout);
   vector< pair<size_t, long long> > linkage_sequence = 
     LinkageSequenceComputer<MemoryBasedDissimilarityMatrix<size_t>, long long>::GetLinkageSequence(ReadDissimilarities());
-  //vector< pair<size_t, long long> > linkage_sequence = GetLinkageSequence(ReadDissimilarities());
   for (size_t index = 0; index < linkage_sequence.size(); ++index) {
     cout << "i = " << linkage_sequence[index].first 
          << " F_i = " << linkage_sequence[index].second << endl;

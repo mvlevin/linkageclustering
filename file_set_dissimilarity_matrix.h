@@ -41,6 +41,8 @@ class FileSetDissimilarityMatrix {
   // Fulfills the interface needed for a DissimilarityIterator 
   // in the GetLinkageSequence algorithm.
   // See compute_linkage_sequence.h for details.
+  //
+  // Doesn't store the whole row in memory, reads the data from file on request.
   class RowIterator {
    public:
     // Initialize with a pointer to a FileReader object.
@@ -92,7 +94,7 @@ class FileSetDissimilarityMatrix {
   // Returns number of rows in the matrix.
   IndexType GetRowCount() const { return filenames_.size(); }
 
-  // Returns 
+  // Returns iterator over one row of the matrix. Uses file-based iterator.
   RowIterator GetRowIterator(IndexType index) const { 
     return RowIterator(filenames_[index]);
   }
