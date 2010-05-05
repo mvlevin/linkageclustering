@@ -7,8 +7,9 @@
 
 using namespace std;
 
-void AddName(const string& name, map<string, size_t>* ids, size_t* id_count) {
+void AddName(const string& name, map<string, size_t>* ids, size_t* id_count, FILE* ids_file) {
   if (ids->find(name) == ids->end()) {
+    fprintf(ids_file, "%s %u\n", name.c_str(), *id_count);
     (*ids)[name] = *id_count;
     ++(*id_count);
   }
@@ -20,20 +21,31 @@ void ComputeIdsAndDegrees(
     size_t* id_count, 
     map<string, size_t>* degrees) {
   freopen(input_filename, "r", stdin);
+  FILE* ids_file = fopen("ids.txt", "w");
+  if (!ids_file) {
+    cerr << "Couldn't open file ids.txt to write down ids" << endl;
+    abort;
+  }
   *id_count = 0;
+  int lines_read = 0;
   while (!feof(stdin)) {
     char buffer[1000];
     // From
     scanf("%s", buffer);
-    AddName(buffer, ids, id_count);
+    AddName(buffer, ids, id_count, ids_file);
     ++(*degrees)[buffer];
     // To
     scanf("%s", buffer);
-    AddName(buffer, ids, id_count);
+    AddName(buffer, ids, id_count, ids_file);
     ++(*degrees)[buffer];
     // Edge weight
     scanf("%s\n", buffer);
+    ++lines_read;
+    if (lines_read % 10000 == 0) {
+      cerr << "Read << " << lines_read << " lines" << endl;
+    }
   }
+  fclose(ids_file);
 }
 
 size_t GetId(const map<string, size_t>& ids) {
@@ -70,6 +82,7 @@ void WriteToFiles(
        ++ids_it, ++degrees_it) {
     fprintf(output_files[ids_it->second], "%u", degrees_it->second);
   }
+  int lines_read = 0;
   while (!feof(stdin)) {
     size_t from = GetId(ids);
     if (from >= id_count) {
@@ -86,6 +99,8 @@ void WriteToFiles(
     size_t weight = floor(initial_weight * 10000 + 1e-8);
     fprintf(output_files[from], " %u %u", to, weight);
     fprintf(output_files[to], " %u %u", from, weight);
+    ++lines_read;
+    cerr << "Read " << lines_read << " lines" << endl;
   }
   for (int i = 0; i < id_count; ++i) {
     fclose(output_files[i]);
@@ -100,7 +115,10 @@ int main(int argc, char** argv) {
   map<string, size_t> ids;
   size_t id_count = 0;
   map<string, size_t> degrees;
+  cerr << "Computing ids and degrees..." << endl;
   ComputeIdsAndDegrees(argv[1], &ids, &id_count, &degrees);
+  cerr << "Splitting the file..." << endl;
   WriteToFiles(argv[1], argv[2], ids, id_count, degrees);
+  cerr << "Done" << endl;
   return 0;
 }
