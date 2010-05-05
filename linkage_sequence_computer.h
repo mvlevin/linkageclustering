@@ -252,7 +252,7 @@ LinkageSequenceComputer<DissimilarityMatrix, LinkageValueType>::GetLinkageSequen
     const DissimilarityMatrix& dissimilarities) {
   LinkageContainer<IndexType, LinkageValueType> linkage_container;
   InitializeLinkageContainerWithWholeSet(dissimilarities, &linkage_container);
-  vector< pair<size_t, LinkageValueType> > linkage_sequence;
+  vector< pair<IndexType, LinkageValueType> > linkage_sequence;
   for (size_t step = 0; step < dissimilarities.GetRowCount(); ++step) {
     LinkageValueType min_linkage = linkage_container.GetMinLinkage();
     size_t removed_element_index = linkage_container.RemoveMinLinkageElement();

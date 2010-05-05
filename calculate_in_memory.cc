@@ -38,26 +38,26 @@ using std::endl;
 using std::pair;
 using std::vector;
 
-MemoryBasedDissimilarityMatrix<size_t> ReadDissimilarities() {
-  size_t element_count;
+MemoryBasedDissimilarityMatrix<unsigned int> ReadDissimilarities() {
+  unsigned int element_count;
   int element_count_read = scanf("%u", &element_count);
   if (element_count_read != 1) {
     cerr << "Couldn't read the element count" << endl;
     abort();
   }
-  vector< vector< pair<size_t, size_t> > > dissimilarities(element_count);
-  for (size_t element_index = 0; element_index < element_count; ++element_index) {
-    size_t dissimilarities_count;
+  vector< vector< pair<unsigned int, unsigned int> > > dissimilarities(element_count);
+  for (unsigned int element_index = 0; element_index < element_count; ++element_index) {
+    unsigned int dissimilarities_count;
     int dissimilarities_count_read = scanf("%u", &dissimilarities_count);
     if (dissimilarities_count_read != 1) {
       cerr << "Couldn't read dissimilarities count at step " << element_index << endl;
       abort();
     }
-    for (size_t dissimilarity_index = 0;
+    for (unsigned int dissimilarity_index = 0;
          dissimilarity_index < dissimilarities_count;
          ++dissimilarity_index) {
-      size_t to;
-      size_t dissimilarity;
+      unsigned int to;
+      unsigned int dissimilarity;
       int read_variables = 
           scanf("%u%u", 
                 &to,
@@ -72,7 +72,7 @@ MemoryBasedDissimilarityMatrix<size_t> ReadDissimilarities() {
       dissimilarities[to].push_back(make_pair(element_index, dissimilarity));
     }
   }
-  MemoryBasedDissimilarityMatrix<size_t> matrix(dissimilarities);
+  MemoryBasedDissimilarityMatrix<unsigned int> matrix(dissimilarities);
   return matrix;
 }
 
@@ -83,8 +83,8 @@ int main(int argc, char** argv) {
   }
   freopen(argv[1], "r", stdin);
   freopen(argv[2], "w", stdout);
-  vector< pair<size_t, long long> > linkage_sequence = 
-    LinkageSequenceComputer<MemoryBasedDissimilarityMatrix<size_t>, long long>::GetLinkageSequence(ReadDissimilarities());
+  vector< pair<unsigned int, long long> > linkage_sequence = 
+    LinkageSequenceComputer<MemoryBasedDissimilarityMatrix<unsigned int>, long long>::GetLinkageSequence(ReadDissimilarities());
   for (size_t index = 0; index < linkage_sequence.size(); ++index) {
     cout << "i = " << linkage_sequence[index].first 
          << " F_i = " << linkage_sequence[index].second << endl;

@@ -25,7 +25,7 @@ class MemoryBasedDissimilarityMatrix {
   // The following typedefs, iterator class and methods are required to use the GetLinkageSequence
   // algorithm with a dissimilarity matrix.
   // See compute_linkage_sequence.h for details.
-  typedef std::size_t IndexType;
+  typedef unsigned int IndexType;
   typedef DissimilarityValueType_ DissimilarityValueType;
 
   // Represents an iterator over a row of the matrix.
