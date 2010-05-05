@@ -75,7 +75,7 @@ class FileSetDissimilarityMatrix {
     void ReadNextPair() {
       if (records_read_ < records_count_) {
         index_ = file_reader_->Read<typename IndexType>();
-        dissimilarity_ = file_reader_->Read<DissimilarityValueType>();
+        dissimilarity_ = file_reader_->Read<typename DissimilarityValueType>();
       }
       ++records_read_;
     }
