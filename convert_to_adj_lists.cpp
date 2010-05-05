@@ -32,6 +32,7 @@ void ConvertToAdjLists(
     abort();
   }
   *id_count = 0;
+  int lines_read = 0;
   while (!feof(stdin)) {
     char buffer[1000];
     // From
@@ -48,6 +49,10 @@ void ConvertToAdjLists(
     }
     adj_lists->at(from).push_back(make_pair(to, weight));
     adj_lists->at(to).push_back(make_pair(from, weight));
+    ++lines_read;
+    if (lines_read % 10000 == 0) {
+      cerr << "Read " << lines_read << " lines" << endl;
+    }
   }
   fclose(ids_file);
 }
