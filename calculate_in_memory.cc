@@ -46,6 +46,7 @@ MemoryBasedDissimilarityMatrix<unsigned int> ReadDissimilarities() {
     abort();
   }
   vector< vector< pair<unsigned int, unsigned int> > > dissimilarities(element_count);
+  int edge_count = 0;
   for (unsigned int element_index = 0; element_index < element_count; ++element_index) {
     unsigned int dissimilarities_count;
     int dissimilarities_count_read = scanf("%u", &dissimilarities_count);
@@ -53,6 +54,7 @@ MemoryBasedDissimilarityMatrix<unsigned int> ReadDissimilarities() {
       cerr << "Couldn't read dissimilarities count at step " << element_index << endl;
       abort();
     }
+    edge_count += dissimilarities_count;
     for (unsigned int dissimilarity_index = 0;
          dissimilarity_index < dissimilarities_count;
          ++dissimilarity_index) {
@@ -70,6 +72,9 @@ MemoryBasedDissimilarityMatrix<unsigned int> ReadDissimilarities() {
       }
       dissimilarities[element_index].push_back(make_pair(to, dissimilarity));
       dissimilarities[to].push_back(make_pair(element_index, dissimilarity));
+    }
+    if (element_index % 1000 == 999) {
+      cerr << "Read " << element_index + 1 << " nodes and " << edge_count << " edges" << endl;
     }
   }
   MemoryBasedDissimilarityMatrix<unsigned int> matrix(dissimilarities);
