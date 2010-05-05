@@ -76,9 +76,13 @@ MemoryBasedDissimilarityMatrix<size_t> ReadDissimilarities() {
   return matrix;
 }
 
-int main() {
-  freopen("input.txt", "r", stdin);
-  freopen("output.txt", "w", stdout);
+int main(int argc, char** argv) {
+  if (argc != 3) {
+    cerr << "Usage: calculate_in_memory input_filename output_filename" << endl;
+    return -1;
+  }
+  freopen(argv[1], "r", stdin);
+  freopen(argv[2], "w", stdout);
   vector< pair<size_t, long long> > linkage_sequence = 
     LinkageSequenceComputer<MemoryBasedDissimilarityMatrix<size_t>, long long>::GetLinkageSequence(ReadDissimilarities());
   for (size_t index = 0; index < linkage_sequence.size(); ++index) {
