@@ -33,8 +33,8 @@ class FileSetDissimilarityMatrix {
   // The following typedefs, iterator class and methods are required to use the GetLinkageSequence
   // algorithm with a dissimilarity matrix.
   // See compute_linkage_sequence.h for details.
-  typedef typename size_t IndexType;
-  typedef typename DissimilarityValueType_ DissimilarityValueType;
+  typedef size_t IndexType;
+  typedef DissimilarityValueType_ DissimilarityValueType;
 
   // Represents an iterator over a row of the matrix.
   // 
@@ -48,7 +48,7 @@ class FileSetDissimilarityMatrix {
     // Initialize with a pointer to a FileReader object.
     RowIterator(const string& filename) {
       file_reader_ = new FileReader(filename);
-      records_count_ = file_reader_->Read<IndexType>();
+      records_count_ = file_reader_->Read<typename IndexType>();
       records_read_ = 0;
       ReadNextPair();
     }
@@ -74,7 +74,7 @@ class FileSetDissimilarityMatrix {
     // Reads next pair (index, dissimilarity) from the file.
     void ReadNextPair() {
       if (records_read_ < records_count_) {
-        index_ = file_reader_->Read<IndexType>();
+        index_ = file_reader_->Read<typename IndexType>();
         dissimilarity_ = file_reader_->Read<DissimilarityValueType>();
       }
       ++records_read_;

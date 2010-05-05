@@ -17,7 +17,7 @@ using std::vector;
 // for all such indices that dissimilarity is non-zero.
 //
 // param DissimilarityValueType_ - type to use for storage of matrix
-//       cells value. Can be, for example, size_t, unsigned long long
+//       cells value. Can be, for example, std::size_t, unsigned long long
 //       or double.
 template<class DissimilarityValueType_>
 class MemoryBasedDissimilarityMatrix {
@@ -25,8 +25,8 @@ class MemoryBasedDissimilarityMatrix {
   // The following typedefs, iterator class and methods are required to use the GetLinkageSequence
   // algorithm with a dissimilarity matrix.
   // See compute_linkage_sequence.h for details.
-  typedef typename size_t IndexType;
-  typedef typename DissimilarityValueType_ DissimilarityValueType;
+  typedef std::size_t IndexType;
+  typedef DissimilarityValueType_ DissimilarityValueType;
 
   // Represents an iterator over a row of the matrix.
   // 
