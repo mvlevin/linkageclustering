@@ -57,8 +57,10 @@ class MemoryBasedDissimilarityMatrix {
   };
 
   MemoryBasedDissimilarityMatrix(
-    const vector< vector<pair<IndexType, DissimilarityValueType> > >& sparse_matrix)
-  : sparse_matrix_(sparse_matrix) {}
+      vector< vector<pair<IndexType, DissimilarityValueType> > >& sparse_matrix) {
+    // So that we don't copy this huge vector.
+    sparse_matrix_.swap(sparse_matrix);
+  }
 
   // Returns number of rows in the matrix.
   IndexType GetRowCount() const { return sparse_matrix_.size(); }
