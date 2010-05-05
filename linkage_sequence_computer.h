@@ -253,9 +253,9 @@ LinkageSequenceComputer<DissimilarityMatrix, LinkageValueType>::GetLinkageSequen
   LinkageContainer<IndexType, LinkageValueType> linkage_container;
   InitializeLinkageContainerWithWholeSet(dissimilarities, &linkage_container);
   vector< pair<IndexType, LinkageValueType> > linkage_sequence;
-  for (size_t step = 0; step < dissimilarities.GetRowCount(); ++step) {
+  for (IndexType step = 0; step < dissimilarities.GetRowCount(); ++step) {
     LinkageValueType min_linkage = linkage_container.GetMinLinkage();
-    size_t removed_element_index = linkage_container.RemoveMinLinkageElement();
+    IndexType removed_element_index = linkage_container.RemoveMinLinkageElement();
     linkage_sequence.push_back(make_pair(removed_element_index, min_linkage));
     for (RowIterator dissimilarity_iterator = 
              dissimilarities.GetRowIterator(removed_element_index);
