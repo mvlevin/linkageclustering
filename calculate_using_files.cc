@@ -42,6 +42,7 @@ using std::pair;
 using std::vector;
 using LinkageClustering::FileSetDissimilarityMatrix;
 using LinkageClustering::LinkageSequenceComputer;
+using LinkageClustering::TextFileReader;
 
 FileSetDissimilarityMatrix<size_t, TextFileReader> InitializeMatrix(const string& basename, int rowcount) {
   vector<string> filenames;
