@@ -10,6 +10,8 @@
 
 using std::vector;
 
+namespace LinkageClustering {
+
 // Represents a sparse square dissimilarity matrix in memory.
 //
 // Stored as a vector of rows.
@@ -78,5 +80,7 @@ class MemoryBasedDissimilarityMatrix {
   // for each such index that dissimilarity is non-zero.
   vector< vector<pair<IndexType, DissimilarityValueType> > > sparse_matrix_;
 };
+
+}  // namespace LinkageClustering
 
 #endif  // MEMORY_BASED_SIMILARITY_MATRIX_H_

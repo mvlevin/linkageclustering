@@ -37,6 +37,8 @@ using std::pair;
 using std::set;
 using std::vector;
 
+namespace LinkageClustering {
+
 // An auxilliary data structure to store elements
 // of the current set along with their linkages
 // to the current set, and retrieve and delete
@@ -270,5 +272,7 @@ LinkageSequenceComputer<DissimilarityMatrix, LinkageValueType>::GetLinkageSequen
   }
   return linkage_sequence;
 }
+
+}  // namespace LinkageClustering
 
 #endif  // LINKAGE_SEQUENCE_COMPUTER_H_

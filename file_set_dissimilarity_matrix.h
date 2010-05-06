@@ -12,6 +12,8 @@
 using std::string;
 using std::vector;
 
+namespace LinkageClustering {
+
 // Represents a square dissimilarity matrix in a set of files.
 //
 // Stored as a vector of file names. Each file contains
@@ -103,5 +105,7 @@ class FileSetDissimilarityMatrix {
   // Vector of file names containing rows of the dissimilarity matrix.
   vector<string> filenames_;
 };
+
+}  // namespace LinkageClustering
 
 #endif  // FILE_SET_DISSIMILARITY_MATRIX_H_

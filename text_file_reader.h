@@ -7,6 +7,8 @@
 using std::ifstream;
 using std::string;
 
+namespace LinkageClustering {
+
 class TextFileReader {
  public:
    TextFileReader(const string& filename) : filename_(filename), file_stream_(filename_.c_str(), ifstream::in) {
@@ -35,5 +37,7 @@ class TextFileReader {
   string filename_;
   ifstream file_stream_;
 };
+
+}  // namespace LinkageClustering
 
 #endif  // TEXT_FILE_READER_H_

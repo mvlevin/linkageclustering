@@ -37,6 +37,8 @@ using std::cout;
 using std::endl;
 using std::pair;
 using std::vector;
+using LinkageClustering::MemoryBasedDissimilarityMatrix;
+using LinkageClustering::LinkageSequenceComputer;
 
 MemoryBasedDissimilarityMatrix<unsigned int> ReadDissimilarities() {
   unsigned int element_count;

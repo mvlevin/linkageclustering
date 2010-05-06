@@ -15,6 +15,8 @@ using std::endl;
 using std::numeric_limits;
 using std::pair;
 using std::vector;
+using LinkageClustering::MemoryBasedDissimilarityMatrix;
+using LinkageClustering::LinkageSequenceComputer;
 
 const int MAX_ELEMENT_COUNT = 100;
 const int MAX_DISSIMILARITY = 1000000000;
