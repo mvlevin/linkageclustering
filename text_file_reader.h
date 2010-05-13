@@ -22,17 +22,15 @@ class TextFileReader {
     file_stream_.close();
   }
 
-  template<class ValueType> 
-  ValueType Read() {
+  template<class ValueType>
+  void Read(ValueType& value) {
     if (!file_stream_.good()) {
       cerr << "Can't read from file " << filename_ << endl;
       abort();
     }
-    ValueType value;
     file_stream_ >> value;
-    return value;
   }
-  
+
  private:
   string filename_;
   ifstream file_stream_;

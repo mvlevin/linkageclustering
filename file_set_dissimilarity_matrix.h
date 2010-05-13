@@ -50,7 +50,7 @@ class FileSetDissimilarityMatrix {
     // Initialize with a pointer to a FileReader object.
     RowIterator(const string& filename) {
       file_reader_ = new FileReader(filename);
-      records_count_ = file_reader_->Read<typename IndexType>();
+      file_reader_->template Read<IndexType>(records_count_);
       records_read_ = 0;
       ReadNextPair();
     }
@@ -76,8 +76,8 @@ class FileSetDissimilarityMatrix {
     // Reads next pair (index, dissimilarity) from the file.
     void ReadNextPair() {
       if (records_read_ < records_count_) {
-        index_ = file_reader_->Read<typename IndexType>();
-        dissimilarity_ = file_reader_->Read<typename DissimilarityValueType>();
+        file_reader_->template Read<IndexType>(index_);
+        file_reader_->template Read<DissimilarityValueType>(dissimilarity_);
       }
       ++records_read_;
     }
