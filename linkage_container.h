@@ -11,6 +11,7 @@
 #define LINKAGE_CONTAINER_H_
 
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <set>
